@@ -1,0 +1,17 @@
+---
+- hosts: ubuntu 
+  become: yes
+  tasks:
+  - name: creating work dir
+    file: 
+      name: "{{ working_dir }}"
+      state: directory
+
+  - name: service list
+    lineinfile:
+      path: "{{ working_dir }}/services.txt"
+      create: yes
+      line: "{{ list }}"
+
+  
+

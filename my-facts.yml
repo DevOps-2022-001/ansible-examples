@@ -1,0 +1,16 @@
+---
+- hosts: centos
+  vars:
+  - location: "/home/ansible/hostinfo"
+  tasks:
+  - name: create a host info file
+    lineinfile:
+      path: "{{ location }}"
+      create: yes
+      line: "{{ ansible_hostname }}"
+  - name: gather more info
+    lineinfile:
+      path: "{{ location }}"
+      line: "{{ hostvars['ansible_all_ipv4_address'] }}"
+      state: present
+

@@ -1,0 +1,12 @@
+working_dir: /home/ansible/work
+
+list:
+- java
+- elinks
+- vim 
+- bind-utils
+
+dictionary:
+  name: my_name
+  session: ansible
+  tasks: ansi_tasks

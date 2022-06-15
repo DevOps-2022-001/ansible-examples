@@ -1,0 +1,15 @@
+---
+- hosts: centos
+  become: yes
+  tasks:
+  - name: file information gathering 
+    stat:
+      path: /home/ansible/hostinfo
+    register: hstfile
+  - name: print hstfile value
+    debug:
+      msg: "{{ hstfile }}"
+
+  - name: renaming
+    command: mv /home/ansible/hostinfo /home/ansible/net-info
+    when: hstfile.stat.exists

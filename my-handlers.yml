@@ -1,0 +1,29 @@
+---
+
+- hosts: centos
+  become: yes
+  tasks:
+  - name: install apache
+    yum:
+      name: httpd
+      state: latest
+ 
+  - name: start apache
+    service:
+      name: httpd
+      state: started
+
+  - name: create index file
+    lineinfile:
+      path: /var/www/html/index.html
+      line: <html><body><h1> Hello Linux Ansible from 192.168.33.21! </h1></body></html>
+      create: yes
+    notify:
+    - httpd service
+
+  handlers:
+    - name: httpd service
+      service:
+        name: httpd
+        state: start
+  

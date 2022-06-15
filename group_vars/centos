@@ -1,0 +1,11 @@
+working_dir: /home/ansible/working
+
+list:
+- abc
+- def
+- ghi
+
+dictionary:
+  name: my_name
+  session: ansible
+  tasks: ansi_tasks

@@ -1,0 +1,13 @@
+---
+
+- hosts: centos
+  become: yes
+  vars_files:
+    - vars.yml
+  tasks:
+  - name: install dependencies
+    yum:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ list }}"
+ 
