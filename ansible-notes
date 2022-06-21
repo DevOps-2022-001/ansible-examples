@@ -1,11 +1,10 @@
-What is Ansible?
-
+### What is Ansible? ###
 Ansible® is an open sourceIT automation tool that automates provisioning, configuration management, application deployment, orchestration, 
 and many other manual IT processes. Unlike more simplistic management tools, Ansible users (like system administrators, developers and 
 architects) can use Ansible automation to install software, automate daily tasks, provision infrastructure, improve security and compliance, 
 patch systems, and share automation across the entire organization.
 
-How Ansible Works?
+### How Ansible Works? ###
 
 Ansible works by connecting to what you want automated and pushing programs that execute instructions that would have been done manually. 
 These programs utilize Ansible modules that are written based on the specific expectations of the endpoint’s connectivity, interface, and 
@@ -15,9 +14,9 @@ There are no additional servers, daemons, or databases required. Typically you'l
 and a version control system to keep track of changes to your content.
 
 
-Use Cases:
+### Use Cases ###
 
-Ansible for infrastructure provisioning:
+### Ansible for infrastructure provisioning ###
 
 Before you can install and configure an application, the infrastructure (a server or cloud endpoint for example) must be prepared for the 
 first time. Provisioning hundreds or thousands of servers manually is not feasible which is why Ansible playbooks are favored by companies 
@@ -27,7 +26,7 @@ Provisioning hundreds or thousands is no longer feasible. With an Ansible playbo
 instance or any number of additional servers employing the same infrastructure parameters or details. Once the environment is provisioned, 
 it may now be configured, something Ansible also does very well as part of the IT operational life cycle.
 
-Ansible for configuration management:
+### Ansible for configuration management ###
 
 Ansible is the simplest solution for automating routine IT tasks. It's designed to be minimal in nature, consistent, secure and highly reliable,
 with an extremely low learning curve for administrators, developers and IT managers.
@@ -35,18 +34,14 @@ with an extremely low learning curve for administrators, developers and IT manag
 Ansible uses simple data descriptions of your infrastructure (both human-readable and machine-parsable)—ensuring everyone on your team will be 
 able to understand the meaning of each configuration task.
 
-Ansible for application deployment:
+### Ansible for application deployment ###
 Ansible allows you to deploy multi-tier applications reliably and consistently, all from one common framework. You can configure needed services 
 as well as push application artifacts from one common system.
 
 Rather than writing custom code to automate your systems, your team now only writes simple task descriptions that even the newest team member 
 can understand on first read - saving not only up-front costs, but making it easier to react to change over time.
 
-What is an Ansible playbook?
-An Ansible playbook is a blueprint of automation tasks—which are complex IT actions executed with no need for human involvement. Ansible playbooks 
-are written in human-readable YAML format and executed on a set, group, or classification of hosts, which together make up an Ansible inventory.
-
-How to install Ansible?
+### How to install Ansible? ###
 
 	In oder to install ansible, you must configure the EPEL repository on your system.
 		sudo yum install epel-release
@@ -66,7 +61,7 @@ How to install Ansible?
 		ssh localhost
 
 		
-Configuration ansible master node and workers
+### Configuration ansible master node and workers ###
 
 	Ansible User:
 	
@@ -193,13 +188,7 @@ Configuration ansible master node and workers
 	-- The service module serves this purpose
 			-- It is compatible with both systemd and the older BSD init style of daemon management
 			
-
-
-
-
-
-
-Pro:
+### Pro ###
 
 Ansible Playbooks are written in YAML. Keep the following in mind when working with YAML in ansible playbooks
 -- List members should start with hyphen followed by a space. Each list item should be at the same indentation level.
@@ -214,7 +203,10 @@ Ansible Playbooks are written in YAML. Keep the following in mind when working w
 -- Booleans are automatically converted in Ansible, thus allowing one to use yes, no, true, false, etc
 -- Floating point numbers are taken as members by default
 
-What is Ansible playbook?
+
+### What is an Ansible playbook? ###
+An Ansible playbook is a blueprint of automation tasks—which are complex IT actions executed with no need for human involvement. Ansible playbooks 
+are written in human-readable YAML format and executed on a set, group, or classification of hosts, which together make up an Ansible inventory.
 
 	-- A set of instructions expressed in YAML
 	-- It targets a host or group of hosts
@@ -247,7 +239,7 @@ What is Ansible playbook?
 		-- The provided name is dispalyed on task exception which provides insight to those running the plays.
 		-- The name also servers as basic documentation within the playbook
 
-Variables:
+### Variables ###
 
 -- Typical use of varaiables:
 	-- Customize configuration values
@@ -270,7 +262,7 @@ Variables:
 -- The register module is used to store task output in s dictionary variable
 
 
-Templates:
+### Templates ###
 
 -- Templates are files with ansible varaible inside that are substituted on play execution
 -- Templates use the template module
@@ -309,14 +301,18 @@ Handlers:
 -- The calls made in the notify section correspond to the handler definitions within the play
 	-- A handler may be defined similarly to tasks
 
-
-
 Tags:
+-- Ansible allows for both plays and tasks to be tagged
+-- By tagging a play or task, you may run a playbook in such a way as to only run plays or tasks with a particural tag
+-- alternatively, you may also skip certain tags during execution.
+-- You specify which tag to run or not run via arguements to the ansible-palybook command 
+
 Vaults:
 
-	-- The ansible-vault command is used to encrypt files and work with those files
-	-- It can take a number of sub-commands
-	-- A file encrypted with ansible-vault is called a vault in Ansible parlance
-	-- The Primary use case 
+-- The ansible-vault command is used to encrypt files and work with those files
+-- It can take a number of sub-commands
+-- A file encrypted with ansible-vault is called a vault in Ansible parlance
+-- The Primary use case 
+
 Roles:
 
