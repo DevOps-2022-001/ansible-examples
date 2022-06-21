@@ -1,0 +1,294 @@
+What is Ansible?
+
+Ansible® is an open sourceIT automation tool that automates provisioning, configuration management, application deployment, orchestration, 
+and many other manual IT processes. Unlike more simplistic management tools, Ansible users (like system administrators, developers and 
+architects) can use Ansible automation to install software, automate daily tasks, provision infrastructure, improve security and compliance, 
+patch systems, and share automation across the entire organization.
+
+How Ansible Works?
+
+Ansible works by connecting to what you want automated and pushing programs that execute instructions that would have been done manually. 
+These programs utilize Ansible modules that are written based on the specific expectations of the endpoint’s connectivity, interface, and 
+commands. Ansible then executes these modules (over standard SSH by default), and removes them when finished (if applicable).
+
+There are no additional servers, daemons, or databases required. Typically you'll work with your favorite terminal program, a text editor, 
+and a version control system to keep track of changes to your content.
+
+
+Use Cases:
+
+Ansible for infrastructure provisioning:
+
+Before you can install and configure an application, the infrastructure (a server or cloud endpoint for example) must be prepared for the 
+first time. Provisioning hundreds or thousands of servers manually is not feasible which is why Ansible playbooks are favored by companies 
+looking to scale IT quickly and reliably. 
+
+Provisioning hundreds or thousands is no longer feasible. With an Ansible playbook you can build one instance, then instantly use the same 
+instance or any number of additional servers employing the same infrastructure parameters or details. Once the environment is provisioned, 
+it may now be configured, something Ansible also does very well as part of the IT operational life cycle.
+
+Ansible for configuration management:
+
+Ansible is the simplest solution for automating routine IT tasks. It's designed to be minimal in nature, consistent, secure and highly reliable,
+with an extremely low learning curve for administrators, developers and IT managers.
+
+Ansible uses simple data descriptions of your infrastructure (both human-readable and machine-parsable)—ensuring everyone on your team will be 
+able to understand the meaning of each configuration task.
+
+Ansible for application deployment:
+Ansible allows you to deploy multi-tier applications reliably and consistently, all from one common framework. You can configure needed services 
+as well as push application artifacts from one common system.
+
+Rather than writing custom code to automate your systems, your team now only writes simple task descriptions that even the newest team member 
+can understand on first read - saving not only up-front costs, but making it easier to react to change over time.
+
+What is an Ansible playbook?
+An Ansible playbook is a blueprint of automation tasks—which are complex IT actions executed with no need for human involvement. Ansible playbooks 
+are written in human-readable YAML format and executed on a set, group, or classification of hosts, which together make up an Ansible inventory.
+
+How to install Ansible?
+
+	In oder to install ansible, you must configure the EPEL repository on your system.
+		sudo yum install epel-release
+	Once the EPEL repositoy is configured, use your package manaager to install ansible and manaage your dependencies:
+		sudo yum install ansible
+	It is advisible to install some means of source control as well:
+		sudo yum install git
+	After the package installation, there are two further steps to be taken before ansible may be used. These points are covered in the configuratoin sections:
+		SSH Access must be provided to each host that you wish to control with ansible.
+			-- create an user (adduser ansible)
+		The Ansible inventory must be configured for each host you wish to control with ansible.
+			-- vim /etc/ansible/hosts
+					localhost
+					ip_address
+					host_name
+		ansible localhost -m ping -k
+		ssh localhost
+
+		
+Configuration ansible master node and workers
+
+	Ansible User:
+	
+	Ansible is best implemented using a common user across all ansible controlled systems
+	Creating a system user for ansible:
+		A basic system user with SSH access is needed for Ansible to connect to a host
+		The following commands executed as root will create a new user on a system called ansible and allow for the users passwprd to be set
+		adduser / useradd
+		passwd
+	
+	This step should be performed on the ansible control node and repeated on each other node you wish for to have Ansible control.
+	
+	SSH:
+	
+	-- While it is possible to connect to a remote host with ansible using password authentication using -k(lower case), it is not common practice as it can incur significant overhead in terms of manual intervention.
+	-- The ssh-keygen and ssh-copy-id command can facilitate creating a pre-shared key user authentication.
+	-- It is possible to prompt for a sudo password at run time using -K(uppercase case) if desired (note this can become a challange when executing against many systems).
+	-- For the most automated configuratoin, edit '/etc/sudoers'(sudo visudo) to allow the ansible user to use sudo with any command without password by using the below line:
+	         ansible ALL=(ALL) NOPASSWD: ALL
+	
+	Ansible.cfg:
+	
+	-- The default Ansible configuration file is /etc/ansible/ansible.cfg /tmp/ansible.cfg
+	-- The configuration properties may be overriden using local files
+			-- The first configuration file found is used and later files are ignored
+			-- The configuration file which be searched for in the following order:
+					-- ANSIBLE_CONFIG (environment varaiable if set)
+					-- ansible.cfg (in the current directory)
+					-- ~/.ansible.cfg(in the home directory)
+					-- /etc/ansible/ansible.cfg
+	-- Starting at Ansible 2.4 the ansible-config utility ships with Ansible (man ansible-config) (ansible-config list)
+    
+	Inventory:
+	
+	-- An inventory is a list of hosts that ansible manages
+	-- The default Ansible inventory file is /etc/ansible/hosts
+	-- Inventory location may be specified as follows
+		-- Default: /etc/ansible/hosts
+		-- Specified by CLI: ansible -i <filename>
+		-- can be set in /etc/ansible/ansible.cfg
+		
+	Ansible ad-hoc:
+	
+	-- Ansible ad-hoc commands are comparable to bash commands
+	-- Playbook is comparable to a bash script
+	-- Syntax:
+			ansible <HOST_NAME or HOST_IP>/ -i <INVENTORY_FILE> -b -m <MODULE> -a <ARG1 ARG2 ARG3> -f 
+			ansible localhost -m yum -a "name=httpd  state=installed/enabled" -b
+
+	Ansible Modules:
+	
+    -- Modules are discrete units of code that can be used from the command line or in a playbook task.
+		-- Modules may take arguements
+		-- Most modules take key=value arguements, delimated by white space
+		-- There are a couple exceptions found in the command and shell modules which we will get to later
+	-- Examples modules include: ping, setup, yum, service, and copy
+	-- There are too many modules to know!
+		-- grate documnentation exists at docs.ansible.com
+		-- you may also use the ansible-doc command
+	
+	Shell & Command Modules:
+	 
+	-- The shell and command modules are both effictive ways to run "raw" commands on a target host
+	-- The command module is the default module used with Ansible ad-hoc when no module specified
+	-- The shell module works almost exactly like the command module except commands are ran in a shell environment (using /bin/sh)
+	-- The primary reason the shell module might be used over the command module is for use of input/output redirection, environment varaiables, or other such shell features(which are not supported with the command module)
+	-- Per the Ansible documentation, the best practice is to use the command module unless you require shell features
+	
+	System Info:
+	
+	-- Ansible facts are simply various properties and information regarding a given remote system.
+	-- The setup module can retrive facts
+			-- ansible -i inv <remote>  -m setup | less
+	-- Facts may be filtered using the setup module ad-hoc by passing a value for the filter parameter
+	-- Ansible command output may be directed to a file using the --tree out put file flag which may be helpful when working with the facts
+	-- it is possible yto use {{ ansible_facts }} for conditional plays based on facts
+	
+	File Manipulation:
+	
+	File Module:
+	-- Working with files is an essential operation for systems management and configuration
+	-- The file module can be used to create, delete, and modify file properties
+	-- The copy module may be used to copy files from number of sources
+			-- The control node to target nodes
+			-- The file system on the target node
+			-- Created during the execution of the copy module and placed on target nodes
+	Lineinfile:
+	-- The lineinfile module is a key way of interacting with a file's contents
+			-- The key feature the module is inserting a line of provided text into a given file
+			-- The module will place the line of text at the end of a file by default however it can place the line after or before a line of matched text
+			-- If the module detects the provided text already in place. it will not add it against
+			-- It may also remove lines a line of text
+		Note: There is replace module that can make more granular file changes using regular expressions
+		
+	Get_URL:
+	-- It is frequently necessary to download files from http hosts on managed hosts
+	-- The get_url module provides functionality for downloaded files over http with a variety of options.
+			-- The http, https, and ftp protocols are supported
+			-- May use basic or x509 Authentication
+			-- Able to perform checksum verification
+			-- Supports proxy network access
+			
+	Archive:
+	-- The archive and unarchive modules may be used to work with various types of file archives
+			-- The modules work with common archives such as jar, gunzip (default), and zip
+			-- These modules allow for compression (or expansion) of files and directories
+		
+	Users:
+	-- Interacting with system users is a common operational task
+	-- Ansible allows this functionality using the user
+	-- The user module may interact with the users in many standard ways
+			-- Create users
+			-- Remove users
+			-- Change User properties
+	
+	Software:
+	-- One of the key fatures necessary for bootstraping and managing hosts is the ability to install and manage software packages
+	-- Package, yum, and apt are used for this purpose depending on distribution:
+			-- yum and apt are used for distribution specific software management
+			-- The package module will automatically detect the target host distribution and use the appropriate method of installing software
+			-- In a mixed distribution environment, the package module is best practice 	
+	Daemons:
+	-- Another common administration task is control system daemons.
+	-- The service module serves this purpose
+			-- It is compatible with both systemd and the older BSD init style of daemon management
+			
+
+
+
+
+
+
+Pro:
+
+Ansible Playbooks are written in YAML. Keep the following in mind when working with YAML in ansible playbooks
+-- List members should start with hyphen followed by a space. Each list item should be at the same indentation level.
+-- Dictionaries are key-value pairs that are designed with colon and a space
+-- There are two characters that can be used to indicate a multi-line value: | or >
+-- When to Queue:
+	-- If a colon ends a line or is followed by a space, the value should be wrapped in double quotes.
+	-- special characters meant to be literals should be always be wrapped in double quotes.
+		YAML special characters are :[ ] { } : > |
+	-- It should be noted that version in Ansible are an exception to the special character rule
+-- An Ansible variables are indicated with curly braces, {{ varaible }}, they must be wrapped in double quotes to prevent interpretation as a dictionary.
+-- Booleans are automatically converted in Ansible, thus allowing one to use yes, no, true, false, etc
+-- Floating point numbers are taken as members by default
+
+What is Ansible playbook?
+
+	-- A set of instructions expressed in YAML
+	-- It targets a host or group of hosts
+	-- It provides a series of tasks(basically ad-hoc commands) that executed in sequence
+-- The goal of play is to map a group of hosts to a well defined role
+-- Plays are keps in files known as playbooks, which may contain one or more plays.
+-- Each play may have a number of options configured such as remote_user, become, and gather_facts
+-- The next selection of a play is the tasks section
+	-- This section contains a list of modules that will be executed against the target(s)
+	-- Each task maps to the use of an ansible module
+-- Best Practices:
+	-- comments are important! (indicated using the hash mark #)
+	-- Break up plays with white space
+	-- Keep it simple
+	-- Remain consistent in feature application
+-- Many palybooks error are the result of improper indentation.
+
+-- Playbooks must be executed using the ansible-palybook command
+-- The ansible-palybook command takes a few basic arguements:
+	-- The inventory file to use (use -i flag)
+	-- The playbook to execute
+
+-- As covered earlier, tasks are essentially the use of ansible modules within a play and are used in the following ways:
+	-- Tasks are presented in a list form beginning with the name property. Each list element starts with a hyphen -
+	-- The name property is simply a plain english statement describing what the task does
+	-- The module this will be used to provide on the next line is followed by a colon
+	-- if applicable, each arguement to be provided to the module follows line by line in the following format(arguement: value)
+	-- Best Practices:
+		-- Name your tasks!
+		-- The provided name is dispalyed on task exception which provides insight to those running the plays.
+		-- The name also servers as basic documentation within the playbook
+
+Variables:
+
+-- Typical use of varaiables:
+	-- Customize configuration values
+	-- Hold return values of commands
+	-- Ansible has many default variables for controlling ansible behaviour
+-- varaiable names should be letters, numbers, and underscores
+-- varaiable should always start with a letter
+-- variable can be scoped by a group, host, or within a playbook
+-- variable may be used to store:
+	-- a simple text or numeric values
+	-- simple lists
+	-- python style of dictionaries
+-- A dictionary is a list of key-value pairs
+-- Variables may be defined in a number of ways:
+	-- via command line arguement
+	-- within a variable file 
+	-- with in a playbook
+	-- within inventory file
+-- it is good practice to wrap varaibles names or statements containing varaible names in weak quotes
+-- The register module is used to store task output in s dictionary variable
+
+
+Templates:
+
+-- Templates are files with ansible varaible inside that are substituted on play execution
+-- Templates use the template module
+-- Notes regarding template files:
+	-- 
+
+Facts:
+
+-- 
+Conditionals:
+Loops:
+Handlers:
+Tags:
+Vaults:
+
+	-- The ansible-vault command is used to encrypt files and work with those files
+	-- It can take a number of sub-commands
+	-- A file encrypted with ansible-vault is called a vault in Ansible parlance
+	-- The Primary use case 
+Roles:
+
