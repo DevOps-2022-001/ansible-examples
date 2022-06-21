@@ -278,11 +278,39 @@ Templates:
 	-- 
 
 Facts:
+-- Ansible Facts are simply various properties ragarding a given remote system
+-- The setup module can retrive facts
+	-- The filter parameter takes regex to allow you to prune fact output
+-- facts are gathered by defaults in ansible palybook execution
+	-- The keyword gather_facts may be set in playbook to change fact gathering behaviour
+-- it is possible to print Ansible facts in files using varaiables
+-- Facts may be filtered using the setup module adhoc by passing a value for the filter parameter
+-- it is possible to use {{ ansible_facts }} for conditional plays based on facts
 
--- 
 Conditionals:
+-- Ansible playbooks are capable of making actions conditional
+-- The when keyword is used to test a condition within a playbook
+	-- Jinja2 expressions are used for conditional evalution
+-- It is also possible to use module output conditionally
+
+
 Loops:
+-- The loop keyword may be used to express a repeated action more concisely
+-- loop may also operate when a list variable
+-- It is also possible to combine loops and conditionals
+
 Handlers:
+-- Ansible provides a mechanism that allows an action to be flagged for execution when a task performs a change
+	-- By only executing certain tasks on change, plays are more effiecent.
+	-- The mechanism is known as a handler in Ansible
+	-- A handler may be called using the notify keyword
+	-- No matter how many times a handler is flagged in a play, it only runs one time at the final phase of play execution
+-- notify will only flag a handler if a task block makes changes
+-- The calls made in the notify section correspond to the handler definitions within the play
+	-- A handler may be defined similarly to tasks
+
+
+
 Tags:
 Vaults:
 
