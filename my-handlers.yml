@@ -18,8 +18,7 @@
       path: /var/www/html/index.html
       line: <html><body><h1> Hello Linux Ansible from 192.168.33.21! </h1></body></html>
       create: yes
-    notify:
-    - httpd service
+    notify: httpd service
 
   handlers:
     - name: httpd service
