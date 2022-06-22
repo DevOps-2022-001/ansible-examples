@@ -1,0 +1,30 @@
+--- # Example for tags
+
+- hosts: ubuntu
+  tasks:
+  - name: installing nginx
+    become: yes
+    yum:
+      name: nginx
+      state: latest
+    tags:
+      - software 
+
+  - name: adding some changes to nginx config
+    become: yes
+    lineinfile:
+      path: /etc/nginx/my-nginx.conf
+      create: yes
+      line: "{{ ansible_hostname }}"
+    tags:
+      - file
+      - config
+
+  - name: copy config file
+    file:
+      src: /etc/nginx/my-nginx.conf
+      dest: /home/ansible/my-nginx.conf
+      state: link
+    tags:
+      - con
+
